@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#f5f7fb">
+  <title>Campusly — College Management</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <section class="login-screen" id="login-screen" hidden>
+    <div class="login-brand"><span class="brand-mark">C</span><span>campusly</span></div>
+    <div class="login-card">
+      <div class="eyebrow">COLLEGE MANAGEMENT PORTAL</div>
+      <h1>Welcome back</h1>
+      <p id="login-description">Sign in to your teacher account to continue.</p>
+      <div class="login-modes" role="group" aria-label="Choose login type">
+        <button type="button" class="login-mode active" data-login-type="teacher" aria-pressed="true">Teacher Login</button>
+        <button type="button" class="login-mode" data-login-type="student" aria-pressed="false">Student Login</button>
+      </div>
+      <form id="login-form">
+        <label class="field"><span>Email address</span><input id="login-email" type="email" required autocomplete="username" placeholder="you@college.edu"></label>
+        <label class="field"><span>Password</span><input id="login-password" type="password" required autocomplete="current-password" placeholder="Your password"></label>
+        <div class="form-error" id="login-error" role="alert" hidden></div>
+        <button class="button button-primary login-submit" type="submit" id="login-button">Teacher Login</button>
+      </form>
+      <div class="login-foot" id="login-foot">Need another account? Ask your college administrator.</div>
+    </div>
+    <div class="login-background-shape"></div>
+  </section>
+  <div class="app-shell" id="app-shell" hidden>
+    <aside class="sidebar" id="sidebar">
+      <a class="brand" href="#" aria-label="Campusly home">
+        <span class="brand-mark">C</span><span>campusly</span>
+      </a>
+      <div class="nav-caption">WORKSPACE</div>
+      <nav class="navigation" aria-label="Main navigation">
+        <a class="nav-link active" href="#overview" data-page="overview"><span class="nav-icon">▦</span> Overview</a>
+        <a class="nav-link" href="#students" data-page="students"><span class="nav-icon">♙</span> Students</a>
+        <a class="nav-link" href="#attendance" data-page="attendance" data-roles="admin,faculty,student"><span class="nav-icon">✓</span> Attendance</a>
+        <a class="nav-link" href="#exams" data-page="exams" data-roles="admin,faculty,student"><span class="nav-icon">▤</span> Examinations</a>
+        <a class="nav-link" href="#fees" data-page="fees" data-roles="admin,student"><span class="nav-icon">$</span> Fees</a>
+        <a class="nav-link" href="#courses" data-page="courses" data-roles="admin,faculty"><span class="nav-icon">⌂</span> Courses</a>
+        <a class="nav-link" href="#reports" data-page="reports" data-roles="admin,faculty"><span class="nav-icon">▧</span> Reports</a>
+        <a class="nav-link" href="#users" data-page="users" data-roles="admin"><span class="nav-icon">♧</span> User accounts</a>
+      </nav>
+      <div class="sidebar-bottom">
+        <div class="help-card">
+          <div class="help-icon">?</div>
+          <strong>Need a hand?</strong>
+          <span>Everything you need to manage your students.</span>
+          <a href="#help" id="help-link">Visit help center <span>↗</span></a>
+        </div>
+        <div class="profile-chip">
+          <div class="avatar admin-avatar" id="sidebar-avatar">CU</div>
+          <div><strong id="sidebar-name">College User</strong><span id="sidebar-role">Staff</span></div>
+          <button class="profile-menu" id="logout-button" aria-label="Sign out" title="Sign out">↪</button>
+        </div>
+      </div>
+    </aside>
+
+    <main class="main-content">
+      <header class="topbar">
+        <button class="menu-button" id="menu-button" aria-label="Toggle navigation">☰</button>
+        <div class="breadcrumbs">Pages <span>/</span> <strong id="breadcrumb">Overview</strong></div>
+        <div class="topbar-actions">
+          <span class="today-label" id="today-label"></span>
+          <button class="theme-button" id="theme-button" aria-label="Toggle dark mode" title="Toggle dark mode">☾</button>
+          <div class="avatar admin-avatar" id="top-avatar">CU</div>
+        </div>
+      </header>
+
+      <section class="page-section" id="overview-page">
+        <div class="page-heading admin-dashboard-content">
+          <div><div class="eyebrow">YOUR CAMPUS AT A GLANCE</div><h1>College overview <span class="wave">✦</span></h1><p>Here’s what’s happening across your college today.</p></div>
+          <button class="button button-primary staff-only" id="add-student-top"><span>＋</span> Add student</button>
+        </div>
+
+        <div class="stats-grid admin-dashboard-content">
+          <article class="stat-card">
+            <div class="stat-top"><span>Total students</span><span class="stat-icon indigo">♙</span></div>
+            <div class="stat-number" id="total-students">—</div>
+            <div class="stat-foot"><span class="status-dot green"></span> Enrolled students</div>
+          </article>
+          <article class="stat-card">
+            <div class="stat-top"><span>Active students</span><span class="stat-icon mint">✓</span></div>
+            <div class="stat-number" id="active-students">—</div>
+            <div class="stat-foot">Currently active</div>
+          </article>
+          <article class="stat-card">
+            <div class="stat-top"><span>Faculty</span><span class="stat-icon mint">♧</span></div>
+            <div class="stat-number" id="faculty-count">—</div>
+            <div class="stat-foot">Active faculty members</div>
+          </article>
+          <article class="stat-card">
+            <div class="stat-top"><span>Courses</span><span class="stat-icon peach">▤</span></div>
+            <div class="stat-number" id="course-count">—</div>
+            <div class="stat-foot">Unique courses offered</div>
+          </article>
+          <article class="stat-card">
+            <div class="stat-top"><span>Departments</span><span class="stat-icon blue">⌂</span></div>
+            <div class="stat-number" id="department-count">—</div>
+            <div class="stat-foot">Academic departments</div>
+          </article>
+          <article class="stat-card">
+            <div class="stat-top"><span>Attendance</span><span class="stat-icon blue">✓</span></div>
+            <div class="stat-number" id="attendance-percent">—</div>
+            <div class="stat-foot">Attendance rate recorded</div>
+          </article>
+          <article class="stat-card fee-stat admin-only">
+            <div class="stat-top"><span>Fees collected</span><span class="stat-icon peach">$</span></div>
+            <div class="stat-number" id="fees-collected">—</div>
+            <div class="stat-foot"><span id="new-this-month">0</span> new students this month</div>
+          </article>
+        </div>
+
+        <section class="chart-grid admin-dashboard-content" id="dashboard-charts">
+          <article class="panel chart-panel"><div class="panel-heading"><div><h2>Attendance trend</h2><p>Monthly attendance across recorded class days.</p></div><select class="chart-range" data-chart="attendance" aria-label="Attendance chart range"><option value="6">6 months</option><option value="3">3 months</option></select></div><canvas id="attendance-chart" height="180" aria-label="Monthly attendance chart"></canvas></article>
+          <article class="panel chart-panel admin-only"><div class="panel-heading"><div><h2>Fee collection</h2><p>Payments received by month.</p></div><select class="chart-range" data-chart="fees" aria-label="Fee chart range"><option value="6">6 months</option><option value="3">3 months</option></select></div><canvas id="fees-chart" height="180" aria-label="Monthly fee collection chart"></canvas></article>
+        </section>
+
+        <section class="panel students-panel admin-dashboard-content">
+          <div class="panel-heading">
+            <div><h2>Recent students</h2><p>A quick look at your student directory.</p></div>
+            <button class="button button-light" id="view-all">View all students <span>→</span></button>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>STUDENT</th><th>STUDENT ID</th><th>COURSE</th><th>DEPARTMENT</th><th>STATUS</th><th></th></tr></thead>
+              <tbody id="recent-table-body"></tbody>
+            </table>
+            <div class="empty-state" id="recent-empty" hidden><div class="empty-icon">♙</div><strong>No students yet</strong><span>Add your first student to get started.</span><button class="button button-primary staff-only" id="empty-add">Add a student</button></div>
+          </div>
+        </section>
+
+        <section class="teacher-dashboard-content" data-roles="faculty" hidden>
+          <div class="page-heading">
+            <div><div class="eyebrow">TEACHER WORKSPACE</div><h1>Teacher dashboard</h1><p>Review your students and today's attendance at a glance.</p></div>
+            <button class="button button-primary" id="teacher-mark-attendance">Mark attendance</button>
+          </div>
+          <div class="stats-grid teacher-stats">
+            <article class="stat-card"><div class="stat-top"><span>Total students</span><span class="stat-icon indigo">♙</span></div><div class="stat-number" id="teacher-total-students">—</div><div class="stat-foot">Active enrolled students</div></article>
+            <article class="stat-card"><div class="stat-top"><span>Total classes</span><span class="stat-icon blue">▦</span></div><div class="stat-number" id="teacher-total-classes">—</div><div class="stat-foot">Days with attendance recorded</div></article>
+            <article class="stat-card"><div class="stat-top"><span id="teacher-attendance-label">Today's attendance</span><span class="stat-icon mint">✓</span></div><div class="stat-number" id="teacher-today-attendance">—</div><div class="stat-foot" id="teacher-today-foot">Present / active students</div></article>
+            <article class="stat-card"><div class="stat-top"><span>Overall attendance</span><span class="stat-icon peach">%</span></div><div class="stat-number" id="teacher-attendance-percent">—</div><div class="stat-foot">Present and late / recorded entries</div></article>
+          </div>
+          <section class="panel students-panel">
+            <div class="panel-heading teacher-roster-heading">
+              <div><h2>Student roster</h2><p>Search by student name or ID. Attendance status is for the selected date.</p></div>
+              <div class="teacher-roster-tools"><label class="search-box"><span>⌕</span><input id="teacher-student-search" type="search" placeholder="Search name or student ID..." autocomplete="off"></label><label class="inline-field"><span>Date</span><input id="teacher-dashboard-date" type="date"></label></div>
+            </div>
+            <div class="table-wrap">
+              <table><thead><tr><th>STUDENT</th><th>STUDENT ID</th><th>EMAIL</th><th>COURSE</th><th>ATTENDANCE</th></tr></thead><tbody id="teacher-students-body"></tbody></table>
+              <div class="empty-state" id="teacher-students-empty" hidden><strong>No students found</strong><span>Try a different search.</span></div>
+            </div>
+          </section>
+        </section>
+
+        <section class="student-dashboard-content" data-roles="student" hidden>
+          <div class="page-heading"><div><div class="eyebrow">MY CAMPUS</div><h1>Student dashboard</h1><p>Your profile and personal attendance record.</p></div></div>
+          <div class="stats-grid teacher-stats">
+            <article class="stat-card"><div class="stat-top"><span>Total classes conducted</span><span class="stat-icon indigo">▦</span></div><div class="stat-number" id="student-total-classes">0</div></article>
+            <article class="stat-card"><div class="stat-top"><span>Classes attended</span><span class="stat-icon mint">✓</span></div><div class="stat-number" id="student-classes-attended">0</div></article>
+            <article class="stat-card"><div class="stat-top"><span>Classes absent</span><span class="stat-icon peach">!</span></div><div class="stat-number" id="student-classes-absent">0</div></article>
+            <article class="stat-card"><div class="stat-top"><span>Attendance percentage</span><span class="stat-icon blue">%</span></div><div class="stat-number" id="student-attendance-percent">0%</div></article>
+          </div>
+          <section class="panel module-panel student-profile-panel"><div class="panel-heading"><div><h2>My information</h2><p>Your account is read-only.</p></div></div><div class="detail-grid" id="student-dashboard-profile"></div></section>
+          <section class="panel module-panel"><div class="panel-heading"><div><h2>My attendance history</h2><p>Only your attendance records are shown.</p></div></div><div class="table-wrap"><table><thead><tr><th>DATE</th><th>STATUS</th></tr></thead><tbody id="student-attendance-body"></tbody></table><div class="empty-state" id="student-attendance-empty" hidden><strong>No attendance recorded yet</strong></div></div></section>
+        </section>
+      </section>
+
+      <section class="page-section" id="students-page" hidden>
+        <div class="page-heading">
+          <div><div class="eyebrow">YOUR CAMPUS DIRECTORY</div><h1>Students</h1><p>Manage student records, courses and enrollment.</p></div>
+          <button class="button button-primary staff-only" id="add-student-list"><span>＋</span> Add student</button>
+        </div>
+        <section class="panel directory-panel">
+          <div class="panel-heading directory-heading">
+            <div><h2>All students <span class="count-pill" id="student-count">0</span></h2><p>Search and filter your student directory.</p></div>
+          </div>
+          <div class="toolbar">
+            <label class="search-box"><span>⌕</span><input id="search-input" type="search" placeholder="Search name, email or student ID..." autocomplete="off"></label>
+            <select id="course-filter" aria-label="Filter by course"><option value="">All courses</option></select>
+            <select id="department-filter" aria-label="Filter by department"><option value="">All departments</option></select>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>STUDENT</th><th>STUDENT ID</th><th>PHONE</th><th>COURSE</th><th>DEPARTMENT</th><th>ENROLLED</th><th>STATUS</th><th></th></tr></thead>
+              <tbody id="students-table-body"></tbody>
+            </table>
+            <div class="empty-state" id="directory-empty" hidden><div class="empty-icon">⌕</div><strong>No students found</strong><span>Try a different search or add a new student.</span></div>
+          </div>
+        </section>
+      </section>
+
+        <section class="page-section module-page" id="attendance-page" data-page-section="attendance" hidden>
+          <div class="page-heading"><div><div class="eyebrow">DAILY CLASS RECORDS</div><h1>Attendance</h1><p>Mark attendance and review each student's attendance history.</p></div><div class="inline-field"><label for="attendance-date">Date</label><input id="attendance-date" type="date"></div></div>
+          <div class="stats-grid compact-stats"><article class="stat-card"><div class="stat-top"><span>Present / late</span><span class="stat-icon mint">✓</span></div><div class="stat-number" id="attendance-present">—</div><div class="stat-foot">Recorded days present</div></article><article class="stat-card"><div class="stat-top"><span>Absences</span><span class="stat-icon peach">!</span></div><div class="stat-number" id="attendance-absent">—</div><div class="stat-foot">Recorded absent days</div></article><article class="stat-card"><div class="stat-top"><span>Attendance rate</span><span class="stat-icon blue">%</span></div><div class="stat-number" id="attendance-rate">—</div><div class="stat-foot">Present and late / recorded days</div></article></div>
+          <section class="panel module-panel"><div class="panel-heading"><div><h2>Attendance history</h2><p>Faculty and administrators can update the selected date.</p></div><button class="button button-primary faculty-only" id="save-attendance">Save attendance</button></div><div class="table-wrap"><table><thead><tr><th>STUDENT</th><th>STUDENT ID</th><th>COURSE</th><th>STATUS</th></tr></thead><tbody id="attendance-table-body"></tbody></table><div class="empty-state" id="attendance-empty" hidden><strong>No students or attendance records</strong></div></div></section>
+        </section>
+
+        <section class="page-section module-page" id="exams-page" data-page-section="exams" hidden>
+          <div class="page-heading"><div><div class="eyebrow">ACADEMIC PERFORMANCE</div><h1>Examinations</h1><p>Manage assessments, marks, grades and student results.</p></div></div>
+          <section class="panel module-panel faculty-only"><div class="panel-heading"><div><h2>Create examination</h2><p>Set an assessment before entering student marks.</p></div></div><form class="inline-form" id="exam-form"><label class="field"><span>Exam title</span><input name="title" required maxlength="120" placeholder="Midterm examination"></label><label class="field"><span>Course</span><select name="course" id="exam-course" required></select></label><label class="field"><span>Exam date</span><input name="exam_date" type="date" required></label><label class="field"><span>Total marks</span><input name="total_marks" type="number" min="1" step="0.5" required value="100"></label><button class="button button-primary" type="submit">Create exam</button></form></section>
+          <section class="panel module-panel faculty-only"><div class="panel-heading"><div><h2>Enter results</h2><p>Grades are calculated automatically from the marks entered.</p></div></div><form class="inline-form" id="result-form"><label class="field"><span>Examination</span><select id="result-exam" required></select></label><label class="field"><span>Student</span><select id="result-student" required></select></label><label class="field"><span>Marks earned</span><input id="result-marks" type="number" min="0" step="0.5" required></label><button class="button button-primary" type="submit">Save result</button></form></section>
+          <section class="panel module-panel"><div class="panel-heading"><div><h2>Examination results</h2><p>Students can view their own results; staff can review the full class.</p></div></div><div class="table-wrap"><table><thead><tr><th>EXAM</th><th>COURSE</th><th>DATE</th><th>STUDENT</th><th>MARKS</th><th>GRADE</th><th>RESULT</th></tr></thead><tbody id="exams-table-body"></tbody></table><div class="empty-state" id="exams-empty" hidden><strong>No examination results yet</strong><span>Create an exam and enter the first result.</span></div></div></section>
+        </section>
+
+        <section class="page-section module-page" id="fees-page" data-page-section="fees" hidden>
+          <div class="page-heading"><div><div class="eyebrow">STUDENT ACCOUNTS</div><h1>Fee management</h1><p>Track invoices, payment records and outstanding balances.</p></div></div>
+          <div class="stats-grid compact-stats fee-summary"><article class="stat-card"><div class="stat-top"><span>Total invoiced</span><span class="stat-icon indigo">$</span></div><div class="stat-number" id="fee-total">—</div></article><article class="stat-card"><div class="stat-top"><span>Collected</span><span class="stat-icon mint">✓</span></div><div class="stat-number" id="fee-paid">—</div></article><article class="stat-card"><div class="stat-top"><span>Pending</span><span class="stat-icon peach">!</span></div><div class="stat-number" id="fee-pending">—</div></article></div>
+          <section class="panel module-panel admin-only"><div class="panel-heading"><div><h2>Create fee record</h2><p>Assign a fee to a student. Payments are tracked separately.</p></div></div><form class="inline-form" id="fee-form"><label class="field"><span>Student</span><select name="student_id" id="fee-student" required></select></label><label class="field"><span>Description</span><input name="description" required maxlength="160" placeholder="Tuition fee"></label><label class="field"><span>Amount</span><input name="amount" type="number" min="0.01" step="0.01" required></label><label class="field"><span>Due date</span><input name="due_date" type="date" required></label><button class="button button-primary" type="submit">Add fee</button></form></section>
+          <section class="panel module-panel"><div class="panel-heading"><div><h2>Fee records</h2><p>Each record shows payments received and the remaining balance.</p></div><a class="button button-light admin-only" href="/api/reports/fees.pdf">Download fee report</a></div><div class="table-wrap"><table><thead><tr><th>STUDENT</th><th>DESCRIPTION</th><th>AMOUNT</th><th>PAID</th><th>PENDING</th><th>DUE DATE</th><th>STATUS</th><th></th></tr></thead><tbody id="fees-table-body"></tbody></table><div class="empty-state" id="fees-empty" hidden><strong>No fee records found</strong></div></div></section>
+        </section>
+
+        <section class="page-section module-page" id="courses-page" data-page-section="courses" hidden>
+          <div class="page-heading"><div><div class="eyebrow">ACADEMIC CATALOG</div><h1>Courses</h1><p>Review courses and departments in your college.</p></div></div>
+          <section class="panel module-panel admin-only"><div class="panel-heading"><div><h2>Add course</h2><p>New courses can be assigned to student and examination records.</p></div></div><form class="inline-form" id="course-form"><label class="field"><span>Course code</span><input name="code" required maxlength="30" placeholder="CS101"></label><label class="field"><span>Course name</span><input name="name" required maxlength="120" placeholder="Computer Science"></label><label class="field"><span>Department</span><input name="department" required maxlength="100" placeholder="Engineering"></label><label class="field"><span>Credits</span><input name="credits" type="number" min="1" max="30" required value="3"></label><button class="button button-primary" type="submit">Add course</button></form></section>
+          <section class="panel module-panel"><div class="panel-heading"><div><h2>Course directory</h2><p>Includes courses already listed on student records.</p></div></div><div class="table-wrap"><table><thead><tr><th>CODE</th><th>COURSE NAME</th><th>DEPARTMENT</th><th>CREDITS</th></tr></thead><tbody id="courses-table-body"></tbody></table><div class="empty-state" id="courses-empty" hidden><strong>No courses found</strong></div></div></section>
+        </section>
+
+        <section class="page-section module-page" id="reports-page" data-page-section="reports" hidden>
+          <div class="page-heading"><div><div class="eyebrow">COLLEGE INSIGHTS</div><h1>Reports</h1><p>Export, download or print student records.</p></div></div>
+          <div class="report-grid"><article class="panel report-card"><div class="stat-icon indigo">▦</div><h2>Student spreadsheet</h2><p>Download student records in Excel format for analysis and sharing.</p><a class="button button-primary" href="/api/reports/students.xlsx">Download Excel</a></article><article class="panel report-card"><div class="stat-icon peach">▧</div><h2>Student PDF report</h2><p>Generate a printable PDF containing your student directory.</p><a class="button button-primary" href="/api/reports/students.pdf">Download PDF</a></article></div>
+          <section class="panel module-panel">
+            <div class="panel-heading"><div><h2>Attendance report</h2><p>Review class-day and student attendance totals.</p></div><div class="teacher-roster-tools"><label class="inline-field"><span>From</span><input id="attendance-report-start" type="date"></label><label class="inline-field"><span>To</span><input id="attendance-report-end" type="date"></label><button class="button button-primary" id="load-attendance-report">Run report</button></div></div>
+            <div class="table-wrap"><table><thead><tr><th>DATE</th><th>RECORDS</th><th>PRESENT</th><th>ABSENT</th><th>LATE</th><th>EXCUSED</th></tr></thead><tbody id="attendance-report-body"></tbody></table><div class="empty-state" id="attendance-report-empty" hidden><strong>No attendance records found</strong></div></div>
+          </section>
+          <section class="panel module-panel">
+            <div class="panel-heading"><div><h2>Attendance by student</h2><p>Attendance rates for the selected date range.</p></div></div>
+            <div class="table-wrap"><table><thead><tr><th>STUDENT</th><th>STUDENT ID</th><th>CLASSES</th><th>ATTENDED</th><th>ABSENT</th><th>RATE</th></tr></thead><tbody id="attendance-report-students"></tbody></table><div class="empty-state" id="attendance-report-students-empty" hidden><strong>No student attendance found</strong></div></div>
+          </section>
+        </section>
+
+        <section class="page-section module-page" id="users-page" data-page-section="users" hidden>
+          <div class="page-heading"><div><div class="eyebrow">ACCESS & PERMISSIONS</div><h1>User accounts</h1><p>Create secure administrator, faculty and student logins.</p></div></div>
+          <section class="panel module-panel"><div class="panel-heading"><div><h2>Create account</h2><p>Passwords are hashed before they are stored.</p></div></div><form class="inline-form" id="user-form"><label class="field"><span>Full name</span><input name="full_name" required maxlength="120"></label><label class="field"><span>Email</span><input name="email" type="email" required maxlength="254"></label><label class="field"><span>Role</span><select name="role" id="user-role" required><option value="faculty">Faculty</option><option value="student">Student</option><option value="admin">Admin</option></select></label><label class="field student-user-field" hidden><span>Link student record</span><select name="student_id" id="user-student"></select></label><label class="field"><span>Temporary password</span><input name="password" type="password" required minlength="10" autocomplete="new-password"></label><button class="button button-primary" type="submit">Create account</button></form></section>
+          <section class="panel module-panel"><div class="panel-heading"><div><h2>College accounts</h2><p>Account passwords are never displayed.</p></div></div><div class="table-wrap"><table><thead><tr><th>NAME</th><th>EMAIL</th><th>ROLE</th><th>STATUS</th></tr></thead><tbody id="users-table-body"></tbody></table><div class="empty-state" id="users-empty" hidden><strong>No accounts found</strong></div></div></section>
+        </section>
+      <footer class="footer">Campusly <span>·</span> College Management System</footer>
+    </main>
+  </div>
+
+  <div class="modal-backdrop" id="student-modal" hidden>
+    <section class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+      <div class="modal-heading"><div><div class="eyebrow">STUDENT DIRECTORY</div><h2 id="modal-title">Add a student</h2></div><button class="icon-button" id="close-modal" aria-label="Close dialog">×</button></div>
+      <form id="student-form">
+        <input type="hidden" id="record-id">
+        <div class="form-grid">
+          <label class="field full"><span>Full name <b>*</b></span><input id="full_name" name="full_name" required maxlength="120" placeholder="e.g. Alex Morgan"></label>
+          <label class="field"><span>Email address <b>*</b></span><input id="email" name="email" type="email" required maxlength="254" placeholder="alex@university.edu"></label>
+          <label class="field"><span>Phone number</span><input id="phone" name="phone" maxlength="30" placeholder="+1 (555) 000-0000"></label>
+          <label class="field"><span>Gender <b>*</b></span><select id="gender" name="gender" required><option value="">Select gender</option><option>Female</option><option>Male</option><option>Non-binary</option><option>Prefer not to say</option></select></label>
+          <label class="field"><span>Date of birth <b>*</b></span><input id="date_of_birth" name="date_of_birth" type="date" required></label>
+          <label class="field"><span>Course <b>*</b></span><input id="course" name="course" required maxlength="100" placeholder="e.g. Computer Science"></label>
+          <label class="field"><span>Department <b>*</b></span><input id="department" name="department" required maxlength="100" placeholder="e.g. Engineering"></label>
+          <label class="field"><span>Enrollment date</span><input id="enrollment_date" name="enrollment_date" type="date"></label>
+          <label class="field"><span>Status</span><select id="status" name="status"><option>Active</option><option>Inactive</option></select></label>
+          <label class="field full"><span>Address</span><textarea id="address" name="address" rows="2" maxlength="300" placeholder="Street address"></textarea></label>
+        </div>
+        <div class="form-error" id="form-error" role="alert" hidden></div>
+        <div class="modal-actions"><button type="button" class="button button-light" id="cancel-modal">Cancel</button><button type="submit" class="button button-primary" id="save-student">Save student</button></div>
+      </form>
+    </section>
+  </div>
+
+  <div class="modal-backdrop" id="details-modal" hidden>
+    <section class="modal details-modal" role="dialog" aria-modal="true" aria-labelledby="details-title">
+      <div class="modal-heading"><div><div class="eyebrow">STUDENT PROFILE</div><h2 id="details-title">Student details</h2></div><button class="icon-button" id="close-details" aria-label="Close dialog">×</button></div>
+      <div id="student-details"></div>
+      <div class="modal-actions"><button class="button button-light" id="details-print-button">Print</button><a class="button button-light staff-only" id="details-pdf-button" href="#">Download PDF</a><button class="button button-light" id="details-close-button">Close</button><button class="button button-primary staff-only" id="details-edit-button">Edit student</button></div>
+    </section>
+  </div>
+
+  <div class="modal-backdrop" id="payment-modal" hidden>
+    <section class="modal" role="dialog" aria-modal="true" aria-labelledby="payment-title"><div class="modal-heading"><div><div class="eyebrow">PAYMENT RECORD</div><h2 id="payment-title">Record a payment</h2></div><button class="icon-button" id="close-payment" aria-label="Close dialog">×</button></div><form id="payment-form"><input type="hidden" id="payment-fee-id"><label class="field"><span>Payment amount</span><input id="payment-amount" type="number" min="0.01" step="0.01" required></label><label class="field payment-reference"><span>Payment reference</span><input id="payment-reference" maxlength="100" placeholder="Receipt or transaction number"></label><div class="form-error" id="payment-error" hidden></div><div class="modal-actions"><button type="button" class="button button-light" id="cancel-payment">Cancel</button><button type="submit" class="button button-primary">Save payment</button></div></form></section>
+  </div>
+
+  <div class="toast-region" id="toast-region" aria-live="polite"></div>
+  <script src="/script.js" defer></script>
+</body>
+</html>

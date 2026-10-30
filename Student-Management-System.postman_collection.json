@@ -1,0 +1,310 @@
+{
+  "info": {
+    "_postman_id": "4791ce1e-093f-4dca-af9a-3ca7568ee5b1",
+    "name": "Campusly College Management System",
+    "description": "Run the matching teacher, student or admin login first. Local demo logins are teacher@gmail.com / teach and student@gmail.com / student. A pre-request script fetches CSRF tokens for state-changing requests.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "if (![\"GET\", \"HEAD\", \"OPTIONS\"].includes(pm.request.method)) {",
+          "  pm.sendRequest({",
+          "    url: pm.collectionVariables.get(\"baseUrl\") + \"/api/auth/csrf\",",
+          "    method: \"GET\"",
+          "  }, function (error, response) {",
+          "    if (error) { console.error(error); return; }",
+          "    pm.request.headers.upsert({ key: \"X-CSRF-Token\", value: response.json().csrf_token });",
+          "  });",
+          "}"
+        ]
+      }
+    }
+  ],
+  "variable": [
+    { "key": "baseUrl", "value": "http://127.0.0.1:5000" },
+    { "key": "adminEmail", "value": "" },
+    { "key": "adminPassword", "value": "" },
+    { "key": "teacherEmail", "value": "teacher@gmail.com" },
+    { "key": "teacherPassword", "value": "teach" },
+    { "key": "studentEmail", "value": "student@gmail.com" },
+    { "key": "studentPassword", "value": "student" },
+    { "key": "studentId", "value": "1" },
+    { "key": "examId", "value": "1" },
+    { "key": "feeId", "value": "1" }
+  ],
+  "item": [
+    {
+      "name": "Authentication",
+      "item": [
+        {
+          "name": "Teacher login",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{teacherEmail}}\",\n  \"password\": \"{{teacherPassword}}\",\n  \"login_type\": \"teacher\"\n}"
+            },
+            "url": "{{baseUrl}}/api/auth/login"
+          }
+        },
+        {
+          "name": "Student login",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{studentEmail}}\",\n  \"password\": \"{{studentPassword}}\",\n  \"login_type\": \"student\"\n}"
+            },
+            "url": "{{baseUrl}}/api/auth/login"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "  pm.collectionVariables.set('studentId', pm.response.json().user.student_id);",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Admin login",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{adminEmail}}\",\n  \"password\": \"{{adminPassword}}\"\n}"
+            },
+            "url": "{{baseUrl}}/api/auth/login"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "  pm.collectionVariables.set('signedInRole', pm.response.json().user.role);",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Current account",
+          "request": { "method": "GET", "url": "{{baseUrl}}/api/auth/me" }
+        },
+        {
+          "name": "Sign out",
+          "request": { "method": "POST", "url": "{{baseUrl}}/api/auth/logout" }
+        },
+        {
+          "name": "Create faculty account",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"full_name\": \"Professor Lane\",\n  \"email\": \"professor@example.edu\",\n  \"role\": \"faculty\",\n  \"password\": \"change-this-password\"\n}"
+            },
+            "url": "{{baseUrl}}/api/auth/users"
+          }
+        },
+        {
+          "name": "Create student account",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"alex.morgan@example.edu\",\n  \"role\": \"student\",\n  \"student_id\": {{studentId}},\n  \"password\": \"change-this-password\"\n}"
+            },
+            "url": "{{baseUrl}}/api/auth/users"
+          }
+        },
+        {
+          "name": "List accounts",
+          "request": { "method": "GET", "url": "{{baseUrl}}/api/auth/users" }
+        }
+      ]
+    },
+    {
+      "name": "Students",
+      "item": [
+        {
+          "name": "Get all students",
+          "request": { "method": "GET", "url": "{{baseUrl}}/api/students" }
+        },
+        {
+          "name": "Get student by ID",
+          "request": { "method": "GET", "url": "{{baseUrl}}/api/students/{{studentId}}" }
+        },
+        {
+          "name": "Add student",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "  pm.collectionVariables.set('studentId', pm.response.json().student.id);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"full_name\": \"Alex Morgan\",\n  \"email\": \"alex.morgan@example.edu\",\n  \"phone\": \"+1 555 010 1234\",\n  \"gender\": \"Prefer not to say\",\n  \"date_of_birth\": \"2003-04-12\",\n  \"course\": \"Computer Science\",\n  \"department\": \"Engineering\",\n  \"address\": \"123 College Street\",\n  \"enrollment_date\": \"2026-08-20\",\n  \"status\": \"Active\"\n}"
+            },
+            "url": "{{baseUrl}}/api/students"
+          }
+        },
+        {
+          "name": "Update student",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"full_name\": \"Alex Morgan\",\n  \"email\": \"alex.morgan@example.edu\",\n  \"phone\": \"+1 555 010 5678\",\n  \"gender\": \"Prefer not to say\",\n  \"date_of_birth\": \"2003-04-12\",\n  \"course\": \"Data Science\",\n  \"department\": \"Engineering\",\n  \"address\": \"456 Campus Avenue\",\n  \"enrollment_date\": \"2026-08-20\",\n  \"status\": \"Active\"\n}"
+            },
+            "url": "{{baseUrl}}/api/students/{{studentId}}"
+          }
+        },
+        {
+          "name": "Delete student",
+          "request": { "method": "DELETE", "url": "{{baseUrl}}/api/students/{{studentId}}" }
+        }
+      ]
+    },
+    {
+      "name": "Dashboard",
+      "item": [
+        { "name": "Statistics", "request": { "method": "GET", "url": "{{baseUrl}}/api/dashboard/stats" } },
+        { "name": "Teacher dashboard", "request": { "method": "GET", "url": "{{baseUrl}}/api/teacher/dashboard" } },
+        { "name": "Student dashboard", "request": { "method": "GET", "url": "{{baseUrl}}/api/student/dashboard" } },
+        { "name": "Six-month analytics", "request": { "method": "GET", "url": "{{baseUrl}}/api/dashboard/analytics" } }
+      ]
+    },
+    {
+      "name": "Courses",
+      "item": [
+        { "name": "List courses", "request": { "method": "GET", "url": "{{baseUrl}}/api/courses" } },
+        {
+          "name": "Create course",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"code\": \"CS101\",\n  \"name\": \"Computer Science\",\n  \"department\": \"Engineering\",\n  \"credits\": 3\n}" },
+            "url": "{{baseUrl}}/api/courses"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Attendance",
+      "item": [
+        { "name": "Attendance report", "request": { "method": "GET", "url": "{{baseUrl}}/api/attendance/report" } },
+        { "name": "Individual student history", "request": { "method": "GET", "url": "{{baseUrl}}/api/attendance/students/{{studentId}}" } },
+        { "name": "History", "request": { "method": "GET", "url": "{{baseUrl}}/api/attendance?date=2026-10-30" } },
+        { "name": "Summary", "request": { "method": "GET", "url": "{{baseUrl}}/api/attendance/summary?student_id={{studentId}}" } },
+        {
+          "name": "Mark attendance",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"date\": \"2026-10-30\",\n  \"records\": [\n    { \"student_id\": {{studentId}}, \"status\": \"Present\" }\n  ]\n}" },
+            "url": "{{baseUrl}}/api/attendance"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Examinations",
+      "item": [
+        { "name": "List exams and results", "request": { "method": "GET", "url": "{{baseUrl}}/api/exams" } },
+        {
+          "name": "Create exam",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"title\": \"Midterm\",\n  \"course\": \"Computer Science\",\n  \"exam_date\": \"2026-10-30\",\n  \"total_marks\": 100\n}" },
+            "url": "{{baseUrl}}/api/exams"
+          }
+        },
+        {
+          "name": "Save exam result",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"results\": [\n    { \"student_id\": {{studentId}}, \"marks\": 91 }\n  ]\n}" },
+            "url": "{{baseUrl}}/api/exams/{{examId}}/results"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Fees",
+      "item": [
+        { "name": "List fees", "request": { "method": "GET", "url": "{{baseUrl}}/api/fees" } },
+        { "name": "Fee report", "request": { "method": "GET", "url": "{{baseUrl}}/api/fees/report" } },
+        {
+          "name": "Create fee record",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "  pm.collectionVariables.set('feeId', pm.response.json().fee.id);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"student_id\": {{studentId}},\n  \"description\": \"Tuition fee\",\n  \"amount\": 500,\n  \"due_date\": \"2026-11-15\"\n}" },
+            "url": "{{baseUrl}}/api/fees"
+          }
+        },
+        {
+          "name": "Record payment",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"amount\": 200,\n  \"reference\": \"PAY-001\"\n}" },
+            "url": "{{baseUrl}}/api/fees/{{feeId}}/payments"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Reports",
+      "item": [
+        { "name": "Students Excel export", "request": { "method": "GET", "url": "{{baseUrl}}/api/reports/students.xlsx" } },
+        { "name": "Students PDF report", "request": { "method": "GET", "url": "{{baseUrl}}/api/reports/students.pdf" } },
+        { "name": "Fee PDF report", "request": { "method": "GET", "url": "{{baseUrl}}/api/reports/fees.pdf" } }
+      ]
+    }
+  ]
+}
